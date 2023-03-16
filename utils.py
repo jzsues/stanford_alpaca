@@ -37,15 +37,15 @@ class OpenAIDecodingArguments(object):
 
 
 def openai_completion(
-    prompts: Union[str, Sequence[str], Sequence[dict[str, str]], dict[str, str]],
-    decoding_args: OpenAIDecodingArguments,
-    model_name="text-davinci-003",
-    sleep_time=2,
-    batch_size=1,
-    max_instances=sys.maxsize,
-    max_batches=sys.maxsize,
-    return_text=False,
-    **decoding_kwargs,
+        prompts: Union[str, Sequence[str], Sequence[dict[str, str]], dict[str, str]],
+        decoding_args: OpenAIDecodingArguments,
+        model_name="text-davinci-003",
+        sleep_time=2,
+        batch_size=1,
+        max_instances=sys.maxsize,
+        max_batches=sys.maxsize,
+        return_text=False,
+        **decoding_kwargs,
 ) -> Union[Union[StrOrOpenAIObject], Sequence[StrOrOpenAIObject], Sequence[Sequence[StrOrOpenAIObject]],]:
     """Decode with OpenAI API.
 
@@ -84,15 +84,15 @@ def openai_completion(
     prompts = prompts[:max_instances]
     num_prompts = len(prompts)
     prompt_batches = [
-        prompts[batch_id * batch_size : (batch_id + 1) * batch_size]
+        prompts[batch_id * batch_size: (batch_id + 1) * batch_size]
         for batch_id in range(int(math.ceil(num_prompts / batch_size)))
     ]
 
     completions = []
     for batch_id, prompt_batch in tqdm.tqdm(
-        enumerate(prompt_batches),
-        desc="prompt_batches",
-        total=len(prompt_batches),
+            enumerate(prompt_batches),
+            desc="prompt_batches",
+            total=len(prompt_batches),
     ):
         batch_decoding_args = copy.deepcopy(decoding_args)  # cloning the decoding_args
 
@@ -123,7 +123,7 @@ def openai_completion(
         completions = [completion.text for completion in completions]
     if decoding_args.n > 1:
         # make completions a nested list, where each entry is a consecutive decoding_args.n of original entries.
-        completions = [completions[i : i + decoding_args.n] for i in range(0, len(completions), decoding_args.n)]
+        completions = [completions[i: i + decoding_args.n] for i in range(0, len(completions), decoding_args.n)]
     if is_single_prompt:
         # Return non-tuple if only 1 input and 1 generation.
         (completions,) = completions
